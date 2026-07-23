@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barangay Anapog Connect</title>
+<style>
+  :root{
+    --bg-app:#eef1fb;
+    --phone-grad-top:#c9d5fb;
+    --phone-grad-bot:#eef1fb;
+    --header-blue:#b9c8f8;
+    --navy:#1c3aa9;
+    --navy-dark:#132b81;
+    --green:#3ea862;
+    --green-dark:#31904f;
+    --text-dark:#1f2547;
+    --text-mute:#5b6285;
+    --card-white:#ffffff;
+    --line:#dfe4fb;
+    --pending:#e8a63c;
+    --progress:#3e7bd6;
+    --resolved:#3ea862;
+    --radius:18px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    font-family:'Segoe UI', Roboto, -apple-system, sans-serif;
+    background:var(--bg-app);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 12px;
+    color:var(--text-dark);
+  }
+
+  .phone{
+    width:390px;
+    max-width:100%;
+    min-height:760px;
+    background:linear-gradient(180deg, var(--phone-grad-top), var(--phone-grad-bot));
+    border-radius:32px;
+    box-shadow:0 25px 60px rgba(28,58,169,0.25), 0 0 0 10px #1a1f38;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- HEADER ---------- */
+  .app-header{
+    background:var(--header-blue);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    position:relative;
+    z-index:5;
+  }
+  .app-header .icon-btn{
+    background:rgba(255,255,255,0.55);
+    border:none;
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    font-size:18px;
+    color:var(--navy);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .app-header .icon-btn:hover{background:#ffffff; transform:translateY(-1px);}
+  .app-header .icon-btn:active{transform:scale(0.92);}
+  .app-header .icon-btn.invisible{visibility:hidden;}
+
+  .header-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:700;
+    font-size:14px;
+    color:var(--navy-dark);
+    text-align:center;
+  }
+  .seal{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffe9a8, #d6a13c 65%, #a6771f);
+    border:2px solid #fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:800;
+    color:#5a3d0a;
+    flex-shrink:0;
+    box-shadow:0 0 0 1px #1c3aa9aa;
+  }
+
+  /* ---------- SCREENS ---------- */
+  .screen{
+    display:none;
+    flex-direction:column;
+    flex:1;
+    min-height:0;
+  }
+  .screen.active{display:flex;}
+  .screen-body{
+    flex:1;
+    overflow-y:auto;
+    padding:20px 18px 28px;
+  }
+  .screen-body::-webkit-scrollbar{width:5px;}
+  .screen-body::-webkit-scrollbar-thumb{background:#b7c3f0; border-radius:10px;}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:block;
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    text-align:center;
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .btn-primary{background:var(--navy); color:#fff; box-shadow:0 8px 18px rgba(28,58,169,0.35);}
+  .btn-primary:hover:not(:disabled){background:var(--navy-dark);}
+  .btn-green{background:var(--green); color:#fff; box-shadow:0 8px 18px rgba(62,168,98,0.35);}
+  .btn-green:hover:not(:disabled){background:var(--green-dark);}
+  .btn-outline{background:#fff; color:var(--navy); border:2px solid var(--navy); }
+  .btn-outline:hover{background:#f0f3ff;}
+  .btn + .btn{margin-top:10px;}
+
+  /* ---------- HOME ---------- */
+  .home-hero{
+    background:var(--card-white);
+    border-radius:var(--radius);
+    padding:26px 20px;
+    text-align:center;
+    box-shadow:0 10px 24px rgba(28,58,169,0.10);
+  }
+  .home-hero .seal-lg{
+    width:64px; height:64px;
+    margin:0 auto 12px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffe9a8, #d6a13c 65%, #a6771f);
+    border:3px solid #fff;
+    box-shadow:0 0 0 2px #1c3aa9aa;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; color:#5a3d0a; font-size:18px;
+  }
+  .home-hero h1{font-size:19px; margin-bottom:8px; color:var(--navy-dark);}
+  .home-hero p{font-size:13.5px; color:var(--text-mute); line-height:1.5;}
+
+  .nav-list{
+    margin-top:20px;
+    background:var(--card-white);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 10px 24px rgba(28,58,169,0.10);
+  }
+  .nav-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    background:none;
+    border-left:none; border-right:none; border-top:none;
+    width:100%;
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--navy-dark);
+    font-family:inherit;
+    text-align:left;
+    transition:background .12s ease;
+  }
+  .nav-row:last-child{border-bottom:none;}
+  .nav-row:hover{background:#f4f6ff;}
+  .nav-row span.arrow{color:var(--navy); font-size:16px;}
+
+  /* ---------- SIDE MENU DRAWER ---------- */
+  .overlay{
+    position:absolute; inset:0;
+    background:rgba(15,20,50,0.35);
+    opacity:0; pointer-events:none;
+    transition:opacity .2s ease;
+    z-index:20;
+  }
+  .overlay.active{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:78%;
+    background:var(--card-white);
+    transform:translateX(100%);
+    transition:transform .25s ease;
+    z-index:21;
+    padding:24px 18px;
+    box-shadow:-10px 0 30px rgba(0,0,0,0.15);
+  }
+  .drawer.active{transform:translateX(0);}
+  .drawer-title{
+    font-weight:800; color:var(--navy-dark); font-size:16px; margin-bottom:18px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .drawer .nav-row{border-radius:10px; margin-bottom:6px; box-shadow:none;}
+  .drawer .nav-row{border-bottom:none; background:#f4f6ff;}
+
+  /* ---------- FORM ELEMENTS ---------- */
+  .field-label{
+    font-size:12.5px; font-weight:700; color:var(--navy-dark);
+    margin:16px 0 6px;
+  }
+  .field-label:first-child{margin-top:0;}
+  textarea, input[type=text], input[type=tel]{
+    width:100%;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:11px 12px;
+    font-size:13.5px;
+    font-family:inherit;
+    color:var(--text-dark);
+    background:#fff;
+    resize:none;
+  }
+  textarea:focus, input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+  textarea{min-height:74px;}
+
+  .issue-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:8px;
+  }
+  .issue-chip{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:12px;
+    padding:12px 6px;
+    text-align:center;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:700;
+    color:var(--text-mute);
+    transition:all .15s ease;
+  }
+  .issue-chip .emoji{display:block; font-size:20px; margin-bottom:4px;}
+  .issue-chip.selected{border-color:var(--green); background:#eafcf0; color:var(--green-dark);}
+  .issue-chip:hover{border-color:var(--navy);}
+
+  .photo-upload{
+    margin-top:8px;
+    border:2px dashed var(--line);
+    border-radius:12px;
+    padding:14px;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-mute);
+    cursor:pointer;
+  }
+  .photo-upload.has-file{border-color:var(--green); color:var(--green-dark); background:#eafcf0;}
+  .photo-upload input{display:none;}
+
+  .form-actions{margin-top:22px;}
+  .error-text{color:#c0392b; font-size:11.5px; margin-top:4px; display:none;}
+  .error-text.show{display:block;}
+
+  /* ---------- INFO CARDS (Barangay Info) ---------- */
+  .page-heading{
+    display:flex; align-items:center; gap:8px;
+    font-size:16px; font-weight:800; color:var(--navy-dark);
+    margin-bottom:16px;
+  }
+  .info-card{
+    background:#fff; border-radius:14px; padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 6px 16px rgba(28,58,169,0.08);
+    margin-bottom:12px;
+    cursor:default;
+  }
+  .info-card .ic{
+    width:36px; height:36px; border-radius:10px;
+    background:#e8edff; color:var(--navy);
+    display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+  }
+  .info-card .ic-t{font-size:12px; font-weight:700; color:var(--text-mute);}
+  .info-card .ic-v{font-size:13.5px; font-weight:800; color:var(--text-dark);}
+  .info-card.link{cursor:pointer;}
+  .info-card.link:hover{background:#f4f6ff;}
+
+  /* ---------- FAQ ---------- */
+  .faq-item{
+    background:#fff; border-radius:14px; margin-bottom:10px;
+    box-shadow:0 6px 16px rgba(28,58,169,0.08);
+    overflow:hidden;
+  }
+  .faq-q{
+    padding:14px 16px; display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer; font-size:13px; font-weight:700; color:var(--navy-dark);
+  }
+  .faq-q .chev{transition:transform .2s ease; color:var(--navy); font-size:14px;}
+  .faq-item.open .faq-q .chev{transform:rotate(180deg);}
+  .faq-a{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+    padding:0 16px;
+    font-size:12.5px; color:var(--text-mute); line-height:1.55;
+  }
+  .faq-item.open .faq-a{max-height:220px; padding-bottom:16px;}
+
+  /* ---------- REPORT SUBMITTED ---------- */
+  .center-screen{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 26px; text-align:center;
+  }
+  .check-circle{
+    width:64px; height:64px; border-radius:50%;
+    background:var(--navy); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:30px; margin-bottom:14px;
+    box-shadow:0 10px 22px rgba(28,58,169,0.35);
+  }
+  .center-screen h2{font-size:16px; color:var(--navy-dark); margin-bottom:20px;}
+  .id-card{
+    background:#fff; border-radius:16px; padding:22px 20px; width:100%;
+    box-shadow:0 10px 24px rgba(28,58,169,0.12); margin-bottom:20px;
+  }
+  .id-card .id-label{font-size:11px; font-weight:700; color:var(--text-mute); margin-bottom:6px;}
+  .id-card .id-value{font-size:26px; font-weight:800; color:var(--navy-dark); margin-bottom:12px; letter-spacing:0.5px;}
+  .id-card .id-note{font-size:11.5px; color:var(--text-mute); line-height:1.5;}
+
+  /* ---------- TRACK ---------- */
+  .track-heading{font-size:19px; font-weight:800; color:var(--navy-dark); margin:6px 0 6px;}
+  .track-sub{font-size:12.5px; color:var(--text-mute); margin-bottom:18px; line-height:1.5;}
+
+  /* ---------- STATUS ---------- */
+  .status-summary{font-size:13px; color:var(--text-dark); margin-bottom:14px; line-height:1.5;}
+  .status-summary b{color:var(--navy-dark);}
+  .status-photo{
+    width:100%; max-width:160px; height:110px; margin:0 auto 20px;
+    border-radius:12px; background:#dfe4ee;
+    display:flex; align-items:center; justify-content:center; font-size:34px;
+    box-shadow:0 6px 14px rgba(0,0,0,0.12);
+  }
+  .timeline{position:relative; padding-left:34px;}
+  .timeline::before{
+    content:''; position:absolute; left:13px; top:6px; bottom:6px; width:2px;
+    background:var(--line);
+  }
+  .t-step{position:relative; margin-bottom:22px;}
+  .t-step:last-child{margin-bottom:0;}
+  .t-dot{
+    position:absolute; left:-34px; top:0; width:28px; height:28px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff;
+    background:var(--line); z-index:1;
+  }
+  .t-step.pending .t-dot{background:var(--pending);}
+  .t-step.progress .t-dot{background:var(--progress);}
+  .t-step.resolved .t-dot{background:var(--resolved);}
+  .t-step .t-title{font-size:13px; font-weight:800; color:var(--text-dark);}
+  .t-step .t-desc{font-size:11.5px; color:var(--text-mute); margin-top:2px;}
+  .t-step.dim{opacity:0.4;}
+
+  .not-found{
+    background:#fdeeee; border:1.5px solid #f3caca; color:#c0392b;
+    border-radius:10px; padding:12px 14px; font-size:12.5px; margin-top:14px; display:none;
+  }
+  .not-found.show{display:block;}
+
+  @media (max-width:420px){
+    .phone{border-radius:0; min-height:100vh; box-shadow:none;}
+    body{padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <!-- ===================== MENU DRAWER ===================== -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-title"><span class="seal">BA</span> Barangay Anapog Connect</div>
+    <button class="nav-row" onclick="goto('home')">Home <span class="arrow">›</span></button>
+    <button class="nav-row" onclick="goto('submit')">Submit Report <span class="arrow">›</span></button>
+    <button class="nav-row" onclick="goto('track')">Track Report <span class="arrow">›</span></button>
+    <button class="nav-row" onclick="goto('info')">Barangay Info <span class="arrow">›</span></button>
+    <button class="nav-row" onclick="goto('faq')">FAQ <span class="arrow">›</span></button>
+  </div>
+
+  <!-- ===================== HOME ===================== -->
+  <section class="screen active" id="screen-home">
+    <div class="app-header">
+      <button class="icon-btn invisible">‹</button>
+      <div class="header-title"><span class="seal">BA</span> Barangay Anapog</div>
+      <button class="icon-btn" onclick="openMenu()">☰</button>
+    </div>
+    <div class="screen-body">
+      <div class="home-hero">
+        <div class="seal-lg">BA</div>
+        <h1>Welcome, Barangay Anapog Resident!</h1>
+        <p>Report community concerns, submit photo proof, and track live updates directly from the barangay office. Help us keep our community safe, clean, and well-maintained.</p>
+      </div>
+
+      <div class="nav-list">
+        <button class="nav-row" onclick="goto('submit')">Submit Report <span class="arrow">›</span></button>
+        <button class="nav-row" onclick="goto('track')">Track Report <span class="arrow">›</span></button>
+        <button class="nav-row" onclick="goto('info')">Barangay Info <span class="arrow">›</span></button>
+        <button class="nav-row" onclick="goto('faq')">FAQ <span class="arrow">›</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SUBMIT REPORT ===================== -->
+  <section class="screen" id="screen-submit">
+    <div class="app-header">
+      <button class="icon-btn" onclick="goto('home')">‹</button>
+      <div class="header-title"><span class="seal">BA</span> Submit Report</div>
+      <button class="icon-btn" onclick="openMenu()">☰</button>
+    </div>
+    <div class="screen-body">
+      <div class="page-heading">📝 Submit Report</div>
+
+      <label class="field-label" for="f-desc">1. Describe a problem (e.g. uncollected garbage, streetlight near danger, water leak, drainage issue)</label>
+      <textarea id="f-desc" placeholder="Tell us the details of the concern..."></textarea>
+      <div class="error-text" id="err-desc">Please describe the problem.</div>
+
+      <label class="field-label">2. Snapshot of the concern</label>
+      <label class="photo-upload" id="photo-upload">
+        📷 <span id="photo-text">Add Photo</span>
+        <input type="file" id="photo-input" accept="image/*" onchange="onPhotoChange()">
+      </label>
+
+      <label class="field-label">Common Issues</label>
+      <div class="issue-grid" id="issue-grid">
+        <div class="issue-chip" data-issue="Garbage"><span class="emoji">🗑️</span>Garbage</div>
+        <div class="issue-chip" data-issue="Streetlight"><span class="emoji">💡</span>Streetlight</div>
+        <div class="issue-chip" data-issue="Drainage"><span class="emoji">🌊</span>Drainage</div>
+        <div class="issue-chip" data-issue="Road"><span class="emoji">🚧</span>Road</div>
+        <div class="issue-chip" data-issue="Safety"><span class="emoji">⚠️</span>Safety</div>
+        <div class="issue-chip" data-issue="Other"><span class="emoji">➕</span>Other</div>
+      </div>
+
+      <label class="field-label" for="f-loc">3. Location</label>
+      <input type="text" id="f-loc" placeholder="Your Barangay Anapog Resort / Describe Address">
+      <div class="error-text" id="err-loc">Please enter a location.</div>
+
+      <label class="field-label" for="f-mobile">4. Mobile #</label>
+      <input type="tel" id="f-mobile" placeholder="09XX-XXX-XXXX">
+      <div class="error-text" id="err-mobile">Please enter a valid mobile number.</div>
+
+      <div class="form-actions">
+        <button class="btn btn-green" onclick="submitReport()">SUBMIT</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REPORT SUBMITTED ===================== -->
+  <section class="screen" id="screen-submitted">
+    <div class="center-screen">
+      <div class="check-circle">✓</div>
+      <h2>Report Submitted</h2>
+      <div class="id-card">
+        <div class="id-label">Your Report ID:</div>
+        <div class="id-value" id="new-report-id">#ANP-101</div>
+        <div class="id-note">Please save this ID to track your report. Copy it or take a screenshot.</div>
+      </div>
+      <button class="btn btn-primary" onclick="goto('track')">TRACK REPORT</button>
+      <button class="btn btn-outline" onclick="goto('home')">RETURN HOME</button>
+    </div>
+  </section>
+
+  <!-- ===================== TRACK REPORT ===================== -->
+  <section class="screen" id="screen-track">
+    <div class="app-header">
+      <button class="icon-btn" onclick="goto('home')">‹</button>
+      <div class="header-title"><span class="seal">BA</span> Submit Report Track Status</div>
+      <button class="icon-btn" onclick="openMenu()">☰</button>
+    </div>
+    <div class="screen-body">
+      <div class="track-heading">Track Your Report</div>
+      <div class="track-sub">Enter your unique Report ID to check its status.</div>
+      <input type="text" id="track-input" placeholder="Enter Report ID">
+      <div class="not-found" id="track-error">We couldn't find that Report ID. Please check and try again.</div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="trackReport()">SUBMIT</button>
+        <button class="btn btn-outline" onclick="goto('home')">RETURN HOME</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REPORT STATUS ===================== -->
+  <section class="screen" id="screen-status">
+    <div class="app-header">
+      <button class="icon-btn" onclick="goto('track')">‹</button>
+      <div class="header-title"><span class="seal">BA</span> Submit Report Track Status</div>
+      <button class="icon-btn" onclick="openMenu()">☰</button>
+    </div>
+    <div class="screen-body">
+      <div class="status-summary">Your report is about <b id="status-desc">uncollected garbage</b>.</div>
+      <div class="status-photo" id="status-photo">🗑️</div>
+      <div class="timeline" id="status-timeline">
+        <div class="t-step" id="step-pending">
+          <div class="t-dot">●</div>
+          <div class="t-title">PENDING</div>
+          <div class="t-desc">Report Received – Under Review</div>
+        </div>
+        <div class="t-step" id="step-progress">
+          <div class="t-dot">⟳</div>
+          <div class="t-title">IN PROGRESS</div>
+          <div class="t-desc">Staff Dispatched – Working</div>
+        </div>
+        <div class="t-step" id="step-resolved">
+          <div class="t-dot">✓</div>
+          <div class="t-title">RESOLVED</div>
+          <div class="t-desc">Issue Fixed – Thank you!</div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-outline" onclick="goto('home')">RETURN HOME</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BARANGAY INFO ===================== -->
+  <section class="screen" id="screen-info">
+    <div class="app-header">
+      <button class="icon-btn" onclick="goto('home')">‹</button>
+      <div class="header-title"><span class="seal">BA</span> Barangay Info</div>
+      <button class="icon-btn" onclick="openMenu()">☰</button>
+    </div>
+    <div class="screen-body">
+      <div class="page-heading">ℹ️ Barangay Info</div>
+
+      <div class="info-card">
+        <div class="ic">👤</div>
+        <div>
+          <div class="ic-t">Contact</div>
+          <div class="ic-v">Barangay Captain</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="ic">📞</div>
+        <div>
+          <div class="ic-t">Hot line Number</div>
+          <div class="ic-v">0999-XXX-XXXX</div>
+        </div>
+      </div>
+
+      <div class="info-card link" onclick="alert('This would open the Barangay Anapog official Facebook page.')">
+        <div class="ic">🌐</div>
+        <div>
+          <div class="ic-t">Barangay official page</div>
+          <div class="ic-v">Anapog Official Page</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="screen" id="screen-faq">
+    <div class="app-header">
+      <button class="icon-btn" onclick="goto('home')">‹</button>
+      <div class="header-title"><span class="seal">BA</span> FAQ</div>
+      <button class="icon-btn" onclick="openMenu()">☰</button>
+    </div>
+    <div class="screen-body">
+      <div class="page-heading">❓ FAQ</div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">1. How can I submit my complaint? <span class="chev">⌄</span></div>
+        <div class="faq-a">To submit a report, go to the Submit Report page and enter the required details, upload a photo if available, and click Submit Report. You will receive a Report ID that can be used to track your report's status.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">2. How can I track my report? <span class="chev">⌄</span></div>
+        <div class="faq-a">Visit the Track Report page and enter your Report ID in the search field. The system will display the current status of your report, such as Pending, In Progress, or Resolved.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">3. What types of issues can I report? <span class="chev">⌄</span></div>
+        <div class="faq-a">Residents may report community concerns such as damaged roads, streetlight problems, drainage issues, garbage collection concerns, public safety issues, and other matters that require barangay attention.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ---------- in-memory "database" of reports (no localStorage per platform rules) ----------
+  let reportCounter = 100;
+  const reports = {
+    'ANP-101': {
+      desc: 'uncollected garbage',
+      emoji: '🗑️',
+      status: 'progress' // pending | progress | resolved
+    }
+  };
+  let lastSubmittedId = null;
+
+  // ---------- navigation ----------
+  function goto(name){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    closeMenu();
+    const body = document.querySelector('#screen-' + name + ' .screen-body');
+    if(body) body.scrollTop = 0;
+  }
+
+  function openMenu(){
+    document.getElementById('overlay').classList.add('active');
+    document.getElementById('drawer').classList.add('active');
+  }
+  function closeMenu(){
+    document.getElementById('overlay').classList.remove('active');
+    document.getElementById('drawer').classList.remove('active');
+  }
+
+  // ---------- submit report screen ----------
+  let selectedIssue = null;
+  document.querySelectorAll('.issue-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.issue-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedIssue = chip.dataset.issue;
+    });
+  });
+
+  function onPhotoChange(){
+    const input = document.getElementById('photo-input');
+    const label = document.getElementById('photo-upload');
+    const text = document.getElementById('photo-text');
+    if(input.files && input.files.length > 0){
+      label.classList.add('has-file');
+      text.textContent = input.files[0].name + ' ✓';
+    } else {
+      label.classList.remove('has-file');
+      text.textContent = 'Add Photo';
+    }
+  }
+
+  function submitReport(){
+    const desc = document.getElementById('f-desc').value.trim();
+    const loc = document.getElementById('f-loc').value.trim();
+    const mobile = document.getElementById('f-mobile').value.trim();
+
+    let valid = true;
+    document.getElementById('err-desc').classList.toggle('show', desc === '');
+    document.getElementById('err-loc').classList.toggle('show', loc === '');
+    const mobileOk = /^[0-9\-\s]{7,15}$/.test(mobile);
+    document.getElementById('err-mobile').classList.toggle('show', !mobileOk);
+    if(desc === '' || loc === '' || !mobileOk) valid = false;
+    if(!valid) return;
+
+    reportCounter++;
+    const id = 'ANP-' + reportCounter;
+    reports[id] = {
+      desc: selectedIssue ? (selectedIssue + ' – ' + desc) : desc,
+      emoji: issueEmoji(selectedIssue),
+      status: 'pending'
+    };
+    lastSubmittedId = id;
+    document.getElementById('new-report-id').textContent = '#' + id;
+
+    // reset form for next time
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-loc').value = '';
+    document.getElementById('f-mobile').value = '';
+    document.querySelectorAll('.issue-chip').forEach(c => c.classList.remove('selected'));
+    selectedIssue = null;
+    document.getElementById('photo-input').value = '';
+    onPhotoChange();
+
+    goto('submitted');
+  }
+
+  function issueEmoji(issue){
+    const map = {Garbage:'🗑️', Streetlight:'💡', Drainage:'🌊', Road:'🚧', Safety:'⚠️', Other:'➕'};
+    return map[issue] || '📋';
+  }
+
+  // ---------- track / status ----------
+  function trackReport(){
+    const raw = document.getElementById('track-input').value.trim().toUpperCase().replace('#','');
+    const errBox = document.getElementById('track-error');
+    const report = reports[raw];
+    if(!report){
+      errBox.classList.add('show');
+      return;
+    }
+    errBox.classList.remove('show');
+    showStatus(raw, report);
+  }
+
+  function showStatus(id, report){
+    document.getElementById('status-desc').textContent = report.desc;
+    document.getElementById('status-photo').textContent = report.emoji;
+
+    const steps = ['pending','progress','resolved'];
+    const order = {pending:0, progress:1, resolved:2};
+    const currentIndex = order[report.status];
+
+    steps.forEach((step, i) => {
+      const el = document.getElementById('step-' + step);
+      el.classList.remove('pending','progress','resolved','dim');
+      if(i <= currentIndex){
+        el.classList.add(step === 'pending' ? 'pending' : (step === 'progress' ? 'progress' : 'resolved'));
+      } else {
+        el.classList.add('dim');
+      }
+    });
+
+    goto('status');
+  }
+
+  // ---------- FAQ accordion ----------
+  function toggleFaq(el){
+    const item = el.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  }
+
+  // pre-fill track input with the most recent report id when arriving from "Track Report" after a submission
+  document.getElementById('screen-track').addEventListener('transitionstart', () => {});
+</script>
+
+</body>
+</html>
