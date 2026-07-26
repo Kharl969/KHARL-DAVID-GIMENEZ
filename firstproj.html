@@ -50,7 +50,7 @@
     flex-direction:column;
   }
 
-  /* ---------- HEADER ---------- */
+
   .app-header{
     background:var(--header-blue);
     display:flex;
@@ -103,7 +103,7 @@
     box-shadow:0 0 0 1px #1c3aa9aa;
   }
 
-  /* ---------- SCREENS ---------- */
+  
   .screen{
     display:none;
     flex-direction:column;
@@ -119,7 +119,7 @@
   .screen-body::-webkit-scrollbar{width:5px;}
   .screen-body::-webkit-scrollbar-thumb{background:#b7c3f0; border-radius:10px;}
 
-  /* ---------- BUTTONS ---------- */
+ 
   .btn{
     display:block;
     width:100%;
@@ -142,7 +142,7 @@
   .btn-outline:hover{background:#f0f3ff;}
   .btn + .btn{margin-top:10px;}
 
-  /* ---------- HOME ---------- */
+
   .home-hero{
     background:var(--card-white);
     border-radius:var(--radius);
@@ -191,7 +191,7 @@
   .nav-row:hover{background:#f4f6ff;}
   .nav-row span.arrow{color:var(--navy); font-size:16px;}
 
-  /* ---------- SIDE MENU DRAWER ---------- */
+
   .overlay{
     position:absolute; inset:0;
     background:rgba(15,20,50,0.35);
@@ -219,7 +219,7 @@
   .drawer .nav-row{border-radius:10px; margin-bottom:6px; box-shadow:none;}
   .drawer .nav-row{border-bottom:none; background:#f4f6ff;}
 
-  /* ---------- FORM ELEMENTS ---------- */
+
   .field-label{
     font-size:12.5px; font-weight:700; color:var(--navy-dark);
     margin:16px 0 6px;
@@ -278,7 +278,7 @@
   .error-text{color:#c0392b; font-size:11.5px; margin-top:4px; display:none;}
   .error-text.show{display:block;}
 
-  /* ---------- INFO CARDS (Barangay Info) ---------- */
+  
   .page-heading{
     display:flex; align-items:center; gap:8px;
     font-size:16px; font-weight:800; color:var(--navy-dark);
@@ -301,7 +301,7 @@
   .info-card.link{cursor:pointer;}
   .info-card.link:hover{background:#f4f6ff;}
 
-  /* ---------- FAQ ---------- */
+ 
   .faq-item{
     background:#fff; border-radius:14px; margin-bottom:10px;
     box-shadow:0 6px 16px rgba(28,58,169,0.08);
@@ -320,7 +320,7 @@
   }
   .faq-item.open .faq-a{max-height:220px; padding-bottom:16px;}
 
-  /* ---------- REPORT SUBMITTED ---------- */
+ 
   .center-screen{
     flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
     padding:32px 26px; text-align:center;
@@ -341,11 +341,11 @@
   .id-card .id-value{font-size:26px; font-weight:800; color:var(--navy-dark); margin-bottom:12px; letter-spacing:0.5px;}
   .id-card .id-note{font-size:11.5px; color:var(--text-mute); line-height:1.5;}
 
-  /* ---------- TRACK ---------- */
+ 
   .track-heading{font-size:19px; font-weight:800; color:var(--navy-dark); margin:6px 0 6px;}
   .track-sub{font-size:12.5px; color:var(--text-mute); margin-bottom:18px; line-height:1.5;}
 
-  /* ---------- STATUS ---------- */
+  
   .status-summary{font-size:13px; color:var(--text-dark); margin-bottom:14px; line-height:1.5;}
   .status-summary b{color:var(--navy-dark);}
   .status-photo{
@@ -389,7 +389,7 @@
 
 <div class="phone" id="phone">
 
-  <!-- ===================== MENU DRAWER ===================== -->
+ 
   <div class="overlay" id="overlay" onclick="closeMenu()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-title"><span class="seal">BA</span> Barangay Anapog Connect</div>
@@ -400,7 +400,7 @@
     <button class="nav-row" onclick="goto('faq')">FAQ <span class="arrow">›</span></button>
   </div>
 
-  <!-- ===================== HOME ===================== -->
+  <!HOME>
   <section class="screen active" id="screen-home">
     <div class="app-header">
       <button class="icon-btn invisible">‹</button>
@@ -423,7 +423,7 @@
     </div>
   </section>
 
-  <!-- ===================== SUBMIT REPORT ===================== -->
+  <!SUBMIT REPORT>
   <section class="screen" id="screen-submit">
     <div class="app-header">
       <button class="icon-btn" onclick="goto('home')">‹</button>
@@ -467,7 +467,7 @@
     </div>
   </section>
 
-  <!-- ===================== REPORT SUBMITTED ===================== -->
+  <!REPORT SUBMITTED >
   <section class="screen" id="screen-submitted">
     <div class="center-screen">
       <div class="check-circle">✓</div>
@@ -482,7 +482,7 @@
     </div>
   </section>
 
-  <!-- ===================== TRACK REPORT ===================== -->
+  <!TRACK REPORT >
   <section class="screen" id="screen-track">
     <div class="app-header">
       <button class="icon-btn" onclick="goto('home')">‹</button>
